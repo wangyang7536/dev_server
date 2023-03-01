@@ -34,12 +34,12 @@ public class LeaderElection implements Watcher {
     }
 
     public void reElectLeader() throws InterruptedException, KeeperException {
-        List<String> children = zooKeeper.getChildren(ELECTION_NAMESPACE, false);
-        Collections.sort(children);
-        String smallestChild = children.get(0);
         String predecessorZnodeName = "";
         Stat predecessorStat = null;
         while (predecessorStat == null) {
+            List<String> children = zooKeeper.getChildren(ELECTION_NAMESPACE, false);
+            Collections.sort(children);
+            String smallestChild = children.get(0);
             if (smallestChild.equals(currentZnodeName)) {
                 System.out.println("Current node: " + currentZnodeName + " is the leader ");
                 return;
@@ -82,6 +82,13 @@ public class LeaderElection implements Watcher {
                         System.out.println("Disconnected from Zookeeper event");
                         zooKeeper.notifyAll();
                     }
+                }
+                break;
+            case NodeDeleted:
+                try {
+                    reElectLeader();
+                } catch (InterruptedException e) {
+                } catch (KeeperException e) {
                 }
         }
     }
