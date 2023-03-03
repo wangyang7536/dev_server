@@ -1,4 +1,4 @@
-package org.ocean.server;
+package org.ocean.cluster;
 
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
